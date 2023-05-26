@@ -38,9 +38,10 @@ export default defineComponent({
         },
         async getDataFromApi(page: number) {
             this.loading = true
-            const data = await this.fakeApiCall()
-            this.movies = data.films
-            this.totalMovies = data.length
+            const response = await this.axios.get(`http://localhost:8000/?page=${page}`)
+            console.log(response)
+            this.movies = response.data.films
+            this.totalMovies = response.data.length
             this.loading = false
         },
         /**
