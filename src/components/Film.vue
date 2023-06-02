@@ -1,0 +1,86 @@
+<template>
+    <div class="d-flex align-center justify-center flex-column">
+        <v-card width="60%">
+            <v-card-title>{{ title }}</v-card-title>
+            <v-rating v-model="grade" hover half-increments></v-rating>
+            <v-card-text>
+                <p>Description</p>
+                <v-textarea :model-value="description" readonly></v-textarea>
+                <p>Actors</p>
+                <v-list>
+                    <v-list-item v-for="actor in actors" :key="actor.id" :title="fullname(actor)">
+                        <template v-slot:append>
+                            <!-- <v-btn icon="mdi-pencil" variant="text" @click="editActor(actor)"></v-btn> -->
+                            <v-btn icon="mdi-delete" variant="text" @click="deleteActor(actor)"></v-btn>
+                        </template>
+                    </v-list-item>
+                </v-list>
+                <!-- <v-row align="center" justify="center">
+                    <v-btn icon="mdi-plus" @click="editActorDialog = true"></v-btn>
+                </v-row> -->
+                <EditActor v-model:edit-actor-dialog="editActorDialog" v-model:edited-actor="editedActor"></EditActor>
+            </v-card-text>
+        </v-card>
+    </div>
+</template>
+
+<script lang="ts">
+import EditActor from './EditActor.vue';
+export default {
+    components: {
+        EditActor
+    },
+    data() {
+        return {
+            id: 0,
+            title: "",
+            description: "",
+            actors: [],
+            grade: null,
+            editActorDialog: false,
+            editedActor: null,
+        }
+    },
+    async mounted() {
+        await this.getDataFromAPI()
+    },
+    watch: {
+        async grade(newGrade, oldGrade){
+            console.log(oldGrade, newGrade);
+            if (oldGrade !== null){
+                console.log("here")
+                await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "grade": newGrade })
+            }
+        },
+    },
+    methods: {
+        fullname(actor) {
+            return `${actor.first_name} ${actor.last_name}`
+        },
+        async getDataFromAPI() {
+            const response = await this.axios.get(`http://localhost:8000/${this.$route.params.id}`)
+            this.title = response.data.title
+            this.description = response.data.description
+            this.actors = response.data.actors
+            this.grade = response.data.grade
+        },
+        async deleteActor(actor) {
+            const index = this.actors.indexOf(actor, 0);
+            if (index > -1) {
+                this.actors.splice(index, 1);
+            }
+            await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "actors": this.actors })
+        },
+        async editActor(actor){
+            this.editedActor = actor
+            this.editActorDialog = true
+        },
+        async sendDescription(){
+            console.log("here", this.description)
+        }
+    }
+}
+
+</script>
+
+<style></style>
