@@ -15,9 +15,9 @@
                         </template>
                     </v-list-item>
                 </v-list>
-                <!-- <v-row align="center" justify="center">
-                    <v-btn icon="mdi-plus" @click="editActorDialog = true"></v-btn>
-                </v-row> -->
+                <v-row align="center" justify="center">
+                    <v-btn icon="mdi-plus" @click="addActor"></v-btn>
+                </v-row>
                 <EditActor v-model:edit-actor-dialog="editActorDialog" :edited-actor="editedActor" @actorEdited="sendActor"></EditActor>
             </v-card-text>
         </v-card>
@@ -76,9 +76,18 @@ export default {
             this.editedActor = actor
             this.editActorDialog = true
         },
+        async addActor(){
+            this.editedActor = {
+                "id": -1,
+                "first_name": null,
+                "last_name": null
+            }
+            this.editActorDialog = true
+        },
         async sendActor(actor){
-            console.log("Hello", actor)
-            console.log(this.actors)
+            if(this.actors.indexOf(actor) == -1){
+                this.actors.push(this.editedActor)
+            }
             await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "actors": this.actors })
         },
         async sendDescription(){

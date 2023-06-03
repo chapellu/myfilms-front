@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialog" activator="dialog" width="30%">
-        <v-card>
+        <v-card @keyup.enter="saveActor">
             <v-card-text>
                 <p>First name</p>
                 <v-text-field label="First name" v-model="firstName"></v-text-field>
