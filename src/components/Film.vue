@@ -5,20 +5,20 @@
             <v-rating v-model="grade" hover half-increments></v-rating>
             <v-card-text>
                 <p>Description</p>
-                <v-textarea :model-value="description" readonly></v-textarea>
+                <v-textarea v-model="description" @change="sendDescription"></v-textarea>
                 <p>Actors</p>
                 <v-list>
                     <v-list-item v-for="actor in actors" :key="actor.id" :title="fullname(actor)">
                         <template v-slot:append>
-                            <!-- <v-btn icon="mdi-pencil" variant="text" @click="editActor(actor)"></v-btn> -->
+                            <v-btn icon="mdi-pencil" variant="text" @click="editActor(actor)"></v-btn>
                             <v-btn icon="mdi-delete" variant="text" @click="deleteActor(actor)"></v-btn>
                         </template>
                     </v-list-item>
                 </v-list>
-                <!-- <v-row align="center" justify="center">
-                    <v-btn icon="mdi-plus" @click="editActorDialog = true"></v-btn>
-                </v-row> -->
-                <EditActor v-model:edit-actor-dialog="editActorDialog" v-model:edited-actor="editedActor"></EditActor>
+                <v-row align="center" justify="center">
+                    <v-btn icon="mdi-plus" @click="addActor"></v-btn>
+                </v-row>
+                <EditActor v-model:edit-actor-dialog="editActorDialog" :edited-actor="editedActor" @actorEdited="sendActor"></EditActor>
             </v-card-text>
         </v-card>
     </div>
@@ -39,6 +39,7 @@ export default {
             grade: null,
             editActorDialog: false,
             editedActor: null,
+            descriptionLoading: false
         }
     },
     async mounted() {
@@ -75,8 +76,25 @@ export default {
             this.editedActor = actor
             this.editActorDialog = true
         },
+        async addActor(){
+            this.editedActor = {
+                "id": -1,
+                "first_name": null,
+                "last_name": null
+            }
+            this.editActorDialog = true
+        },
+        async sendActor(actor){
+            if(this.actors.indexOf(actor) == -1){
+                this.actors.push(this.editedActor)
+            }
+            await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "actors": this.actors })
+        },
         async sendDescription(){
-            console.log("here", this.description)
+            await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "description": this.description })
+        },
+        async hello(){
+            console.log("hello")
         }
     }
 }
