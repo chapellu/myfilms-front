@@ -5,12 +5,12 @@
             <v-rating v-model="grade" hover half-increments></v-rating>
             <v-card-text>
                 <p>Description</p>
-                <v-textarea v-model.lazy="description" @change="sendDescription"></v-textarea>
+                <v-textarea v-model="description" @change="sendDescription"></v-textarea>
                 <p>Actors</p>
                 <v-list>
                     <v-list-item v-for="actor in actors" :key="actor.id" :title="fullname(actor)">
                         <template v-slot:append>
-                            <!-- <v-btn icon="mdi-pencil" variant="text" @click="editActor(actor)"></v-btn> -->
+                            <v-btn icon="mdi-pencil" variant="text" @click="editActor(actor)"></v-btn>
                             <v-btn icon="mdi-delete" variant="text" @click="deleteActor(actor)"></v-btn>
                         </template>
                     </v-list-item>
@@ -18,7 +18,7 @@
                 <!-- <v-row align="center" justify="center">
                     <v-btn icon="mdi-plus" @click="editActorDialog = true"></v-btn>
                 </v-row> -->
-                <EditActor v-model:edit-actor-dialog="editActorDialog" v-model:edited-actor="editedActor"></EditActor>
+                <EditActor v-model:edit-actor-dialog="editActorDialog" :edited-actor="editedActor" @actorEdited="sendActor"></EditActor>
             </v-card-text>
         </v-card>
     </div>
@@ -75,6 +75,11 @@ export default {
         async editActor(actor){
             this.editedActor = actor
             this.editActorDialog = true
+        },
+        async sendActor(actor){
+            console.log("Hello", actor)
+            console.log(this.actors)
+            await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "actors": this.actors })
         },
         async sendDescription(){
             await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "description": this.description })

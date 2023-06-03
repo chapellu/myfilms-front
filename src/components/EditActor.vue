@@ -21,14 +21,25 @@
 </template>
 
 <script lang="ts">
+
+
 export default {
     props: {
         'editActorDialog': Boolean, "editedActor": Object
     },
-    emits: ['update:editActorDialog', 'update:editedActor'],
+    emits: ['update:editActorDialog', 'actorEdited'],
     data() {
         return {
-        }       
+            firstName: null,
+            lastName: null
+        }
+    },
+    watch: {
+        editedActor(newValue, oldValue){
+            console.log(newValue)
+            this.firstName = newValue.first_name
+            this.lastName = newValue.last_name
+        }
     },
     computed: {
         dialog: {
@@ -39,31 +50,13 @@ export default {
                 this.$emit('update:editActorDialog', value)
             },
         },
-        firstName: {
-            get(){
-                return this.editedActor.first_name
-            },
-            set(value){
-                this.lastName = value
-            }
-        },
-        lastName: {
-            get(){
-                return this.editedActor.last_name
-            },
-            set(value){
-                this.lastName = value
-            }
-        },
     },
     methods: {
         saveActor() {
             this.dialog = false
-            this.$emit('update:editedActor', {
-                "id": this.editedActor.id,
-                "first_name": this.firstName,
-                "last_name": this.lastName
-            })
+            this.editedActor.first_name = this.firstName
+            this.editedActor.last_name = this.lastName
+            this.$emit('actorEdited', this.editedActor)
         }
     }
 }
