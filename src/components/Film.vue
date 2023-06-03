@@ -5,7 +5,7 @@
             <v-rating v-model="grade" hover half-increments></v-rating>
             <v-card-text>
                 <p>Description</p>
-                <v-textarea :model-value="description" readonly></v-textarea>
+                <v-textarea v-model.lazy="description" @change="sendDescription"></v-textarea>
                 <p>Actors</p>
                 <v-list>
                     <v-list-item v-for="actor in actors" :key="actor.id" :title="fullname(actor)">
@@ -39,6 +39,7 @@ export default {
             grade: null,
             editActorDialog: false,
             editedActor: null,
+            descriptionLoading: false
         }
     },
     async mounted() {
@@ -76,7 +77,10 @@ export default {
             this.editActorDialog = true
         },
         async sendDescription(){
-            console.log("here", this.description)
+            await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "description": this.description })
+        },
+        async hello(){
+            console.log("hello")
         }
     }
 }
