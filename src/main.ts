@@ -6,17 +6,17 @@
 
 
 // Components
-import App from './App.vue';
-import Home from './Home.vue';
-import Film from './components/Film.vue'
+import App from '@/App.vue';
+import Home from '@/Home.vue';
+import Film from '@/components/Film.vue'
 
 // Composables
 import { createApp } from 'vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 // Plugins
-import { registerPlugins } from './plugins';
-import vuetify from './plugins/vuetify';
+import { registerPlugins } from '@/plugins';
+import vuetify from '@/plugins/vuetify';
 
 // Axios
 import axios from 'axios';

@@ -21,21 +21,27 @@
 </template>
 
 <script lang="ts">
+import { Actor } from '@/types'
 
 
 export default {
+    name: "EditActor",
     props: {
-        'editActorDialog': Boolean, "editedActor": Object
+        'editActorDialog': Boolean,
+        "editedActor": {
+            type: Actor,
+            required: true
+        }
     },
     emits: ['update:editActorDialog', 'actorEdited'],
     data() {
         return {
-            firstName: null,
-            lastName: null
+            firstName: "",
+            lastName: ""
         }
     },
     watch: {
-        editedActor(newValue, oldValue){
+        editedActor(newValue, oldValue) {
             console.log(newValue)
             this.firstName = newValue.first_name
             this.lastName = newValue.last_name
@@ -46,7 +52,7 @@ export default {
             get() {
                 return this.editActorDialog
             },
-            set(value) {
+            set(value: boolean) {
                 this.$emit('update:editActorDialog', value)
             },
         },

@@ -5,7 +5,7 @@
  */
 
 // Plugins
-import { loadFonts } from './webfontloader'
+import { loadFonts } from '@/plugins/webfontloader'
 
 export function registerPlugins () {
   loadFonts()

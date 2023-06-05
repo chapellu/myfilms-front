@@ -8,22 +8,27 @@
 </template>
   
 <script lang="ts">
-import { defineComponent } from 'vue'
+import type { VDataTable } from 'vuetify/lib/labs/components.mjs'
+type UnwrapReadonlyArrayType<A> = A extends Readonly<Array<infer I>> ? UnwrapReadonlyArrayType<I> : A
+type DT = InstanceType<typeof VDataTable>;
+type ReadonlyDataTableHeader = UnwrapReadonlyArrayType<DT['headers']>;
 
-export default defineComponent({
+
+export default {
     // type inference enabled
     data() {
+        const header: ReadonlyDataTableHeader =
+        {
+            title: 'Movie title',
+            key: 'title',
+            align: 'center'
+        }
+
         return {
             totalMovies: 0,
             movies: [],
             loading: true,
-            headers: [
-                {
-                    title: 'Movie title',
-                    key: 'title',
-                    align: 'center'
-                }
-            ],
+            headers: [header],
         }
     },
     async mounted() {
@@ -33,7 +38,7 @@ export default defineComponent({
         async getPage(page: number) {
             await this.getDataFromApi(page)
         },
-        showFilmDetails(event, itemEvent) {
+        showFilmDetails(event: any, itemEvent: { item: { raw: { id: any } } }) {
             this.$router.push({ path: `/${itemEvent.item.raw.id}` })
         },
         async getDataFromApi(page: number) {
@@ -45,5 +50,5 @@ export default defineComponent({
             this.loading = false
         },
     },
-})
+}
 </script>

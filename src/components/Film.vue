@@ -25,7 +25,9 @@
 </template>
 
 <script lang="ts">
-import EditActor from './EditActor.vue';
+import EditActor from '@/components/EditActor.vue';
+import { Actor } from '@/types';
+
 export default {
     components: {
         EditActor
@@ -35,11 +37,12 @@ export default {
             id: 0,
             title: "",
             description: "",
-            actors: [],
-            grade: null,
+            actors: [] as Array<Actor>,
+            grade: -1,
             editActorDialog: false,
-            editedActor: null,
-            descriptionLoading: false
+            editedActor:  null as unknown as Actor,
+            descriptionLoading: false,
+            backendUrl: "http://localhost:8000"
         }
     },
     async mounted() {
@@ -50,48 +53,48 @@ export default {
             console.log(oldGrade, newGrade);
             if (oldGrade !== null){
                 console.log("here")
-                await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "grade": newGrade })
+                await this.axios.put(`${this.backendUrl}/${this.$route.params.id}`, { "grade": newGrade })
             }
         },
     },
     methods: {
-        fullname(actor) {
+        fullname(actor: Actor): string {
             return `${actor.first_name} ${actor.last_name}`
         },
         async getDataFromAPI() {
-            const response = await this.axios.get(`http://localhost:8000/${this.$route.params.id}`)
+            const response = await this.axios.get(`${this.backendUrl}/${this.$route.params.id}`)
             this.title = response.data.title
             this.description = response.data.description
             this.actors = response.data.actors
             this.grade = response.data.grade
         },
-        async deleteActor(actor) {
+        async deleteActor(actor: Actor) {
             const index = this.actors.indexOf(actor, 0);
             if (index > -1) {
                 this.actors.splice(index, 1);
             }
-            await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "actors": this.actors })
+            await this.axios.put(`${this.backendUrl}/${this.$route.params.id}`, { "actors": this.actors })
         },
-        async editActor(actor){
+        async editActor(actor: Actor){
             this.editedActor = actor
             this.editActorDialog = true
         },
         async addActor(){
             this.editedActor = {
                 "id": -1,
-                "first_name": null,
-                "last_name": null
+                "first_name": "",
+                "last_name": ""
             }
             this.editActorDialog = true
         },
-        async sendActor(actor){
+        async sendActor(actor: Actor){
             if(this.actors.indexOf(actor) == -1){
                 this.actors.push(this.editedActor)
             }
-            await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "actors": this.actors })
+            await this.axios.put(`${this.backendUrl}/${this.$route.params.id}`, { "actors": this.actors })
         },
         async sendDescription(){
-            await this.axios.put(`http://localhost:8000/${this.$route.params.id}`, { "description": this.description })
+            await this.axios.put(`${this.backendUrl}/${this.$route.params.id}`, { "description": this.description })
         },
         async hello(){
             console.log("hello")
