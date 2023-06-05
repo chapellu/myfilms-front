@@ -32,21 +32,21 @@ npm run lint
 
 See [Configuration Reference](https://vitejs.dev/config/).
 
-# Docker
+## Docker
 
-## Docker build
+### Docker build
 
 ```shell
 npm run build:docker
 ```
 
-## Docker run
+### Docker run
 
 ```shell
 npm run serve:docker
 ```
 
-#  Docker compose
+## Docker compose
 
 Before being able to run docker compose you will need to build the docker for the two projets: myfilms-front and myfilms-back
 
