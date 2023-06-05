@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
+    "build:docker": "docker build -t myfilms-front:alpha -f deploy/Dockerfile .",
     "preview": "vite preview",
-    "lint": "eslint . --fix --ignore-path .gitignore"
+    "lint": "eslint . --fix --ignore-path .gitignore",
+    "serve:docker": "docker run -p 3000:80 myfilms-front:alpha"
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
@@ -25,7 +27,7 @@
     "@types/node": "^18.15.0",
     "@types/webfontloader": "^1.6.35",
     "@vitejs/plugin-vue": "^3.0.3",
-    "@vue/eslint-config-typescript": "^11.0.0",
+    "@vue/eslint-config-typescript": "^11.0.3",
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
     "sass": "^1.60.0",
